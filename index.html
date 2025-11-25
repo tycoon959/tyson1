@@ -1,0 +1,1585 @@
+
+html
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHISORYA SECONDARY - Library Management System</title>
+    
+    <!-- Excel Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .school-header {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .school-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .school-header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background-color: #2c3e50;
+            padding: 1rem;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav li {
+            margin: 0.5rem 1rem;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .nav a:hover, .nav a.active {
+            background-color: #1abc9c;
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1abc9c;
+        }
+        
+        .card.warning {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .card.warning .number {
+            color: white;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0.25rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1abc9c;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .penalty-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-returned {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .status-borrowed {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .status-overdue {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .user-info {
+            position: absolute;
+            top: 1rem;
+            right: 6rem;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-form">
+            <h2> Ingia kwenye Mfumo</h2>
+            <div class="form-group">
+                <label for="username">Jina la Mtumiaji:</label>
+                <input type="text" id="username" placeholder="Weka jina la mtumiaji" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="password">Nywila:</label>
+                <input type="password" id="password" placeholder="Weka nywila yako" value="admin123">
+            </div>
+            <button class="btn" onclick="login()">Ingia</button>
+            
+            <!-- Reset Button -->
+            <button class="btn btn-danger" onclick="resetSystem()" style="margin-top: 10px; width: 100%;">
+                 Anzisha Upya System (Kama Inakataza)
+            </button>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                <h4>Akaunti za Majaribio:</h4>
+                <p><strong>Mwalimu:</strong> admin / admin123</p>
+                <p><strong>Msaidizi:</strong> assistant / assistant123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main System (Initially Hidden) -->
+    <div id="mainSystem" style="display: none;">
+        <header class="school-header">
+            <h1> CHISORYA SECONDARY SCHOOL</h1>
+            <div class="subtitle">Mfumo wa Usimamizi wa Maktaba</div>
+        </header>
+        
+        <div class="user-info" id="userInfo"></div>
+        <button class="logout-btn" onclick="logout()">Toka</button>
+        
+        <nav class="nav">
+            <ul>
+                <li><a href="#" onclick="showSection('dashboard')" class="active">Dashibodi</a></li>
+                <li><a href="#" onclick="showSection('students')">Wanafunzi</a></li>
+                <li><a href="#" onclick="showSection('books')">Vitabu</a></li>
+                <li><a href="#" onclick="showSection('loans')">Mikopo</a></li>
+                <li><a href="#" onclick="showSection('penalties')">Adhabu</a></li>
+                <li><a href="#" onclick="showSection('reports')">Ripoti</a></li>
+                <li><a href="#" onclick="showSection('admin')">Msimamizi</a></li>
+            </ul>
+        </nav>
+        
+        <div class="container">
+            <!-- Dashibodi -->
+            <div id="dashboard" class="section">
+                <h2> Dashibodi ya Maktaba</h2>
+                <div class="dashboard">
+                    <div class="card">
+                        <h3>Jumla ya Vitabu</h3>
+                        <div class="number" id="totalBooks">0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Wanafunzi Waliosajiliwa</h3>
+                        <div class="number" id="totalStudents">0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Vitabu Vilivyokopwa</h3>
+                        <div class="number" id="borrowedBooks">0</div>
+                    </div>
+                    <div class="card warning">
+                        <h3>Mikopo Iliyochelewa</h3>
+                        <div class="number" id="overdueLoans">0</div>
+                    </div>
+                </div>
+                
+                <div class="section" style="margin-top: 2rem;">
+                    <h3> Mikopo Karibu Kukoma Muda Wake</h3>
+                    <table id="dueSoonTable">
+                        <thead>
+                            <tr>
+                                <th>Mwanafunzi</th>
+                                <th>Kitabu</th>
+                                <th>Tarehe ya Kurudisha</th>
+                                <th>Siku Zilizosalia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dueSoonList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Wanafunzi -->
+            <div id="students" class="section" style="display: none;">
+                <h2> Usimamizi wa Wanafunzi</h2>
+                <button class="btn" onclick="showStudentForm()"> Ongeza Mwanafunzi</button>
+                
+                <div id="studentForm" style="display: none; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px;">
+                    <h3> Ongeza Mwanafunzi Mpya</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentName">Jina Kamili:</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentReg">Namba ya Usajili:</label>
+                            <input type="text" id="studentReg" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentClass">Darasa:</label>
+                            <select id="studentClass" required>
+                                <option value="">Chagua Darasa</option>
+                                <option value="Form 1">Form 1</option>
+                                <option value="Form 2">Form 2</option>
+                                <option value="Form 3">Form 3</option>
+                                <option value="Form 4">Form 4</option>
+                                <option value="Form 5">Form 5</option>
+                                <option value="Form 6">Form 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentStream">Kichwa (Stream):</label>
+                            <select id="studentStream" required>
+                                <option value="">Chagua Kichwa</option>
+                                <option value="SCIENCE">SCIENCE</option>
+                                <option value="ARTS">ARTS</option>
+                                <option value="COMMERCE">COMMERCE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addStudent()"> Hifadhi Mwanafunzi</button>
+                    <button class="btn btn-danger" onclick="hideStudentForm()"> Futa</button>
+                </div>
+                
+                <table id="studentsTable" style="margin-top: 2rem;">
+                    <thead>
+                        <tr>
+                            <th>Namba ya Usajili</th>
+                            <th>Jina Kamili</th>
+                            <th>Darasa</th>
+                            <th>Kichwa</th>
+                            <th>Vitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsList">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Vitabu -->
+            <div id="books" class="section" style="display: none;">
+                <h2> Usimamizi wa Vitabu</h2>
+                <button class="btn" onclick="showBookForm()"> Ongeza Kitabu Kipya</button>
+                
+                <div id="bookForm" style="display: none; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px;">
+                    <h3> Ongeza Kitabu Kipya</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookTitle">Kichwa cha Kitabu:</label>
+                            <input type="text" id="bookTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookAuthor">Mwandishi:</label>
+                            <input type="text" id="bookAuthor" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookISBN">ISBN:</label>
+                            <input type="text" id="bookISBN">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookCopies">Idadi ya Nakala:</label>
+                            <input type="number" id="bookCopies" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCategory">Aina ya Kitabu:</label>
+                        <select id="bookCategory">
+                            <option value="Fasihi">Fasihi</option>
+                            <option value="Sayansi">Sayansi</option>
+                            <option value="Historia">Historia</option>
+                            <option value="Jiografia">Jiografia</option>
+                            <option value="Hisabati">Hisabati</option>
+                            <option value="Inglisi">Inglisi</option>
+                            <option value="Maarifa">Maarifa ya Jamii</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addBook()"> Hifadhi Kitabu</button>
+                    <button class="btn btn-danger" onclick="hideBookForm()"> Futa</button>
+                </div>
+                
+                <table id="booksTable" style="margin-top: 2rem;">
+                    <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Kichwa</th>
+                            <th>Mwandishi</th>
+                            <th>Aina</th>
+                            <th>Nakala Zilizopo</th>
+                            <th>Vitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksList">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mikopo -->
+            <div id="loans" class="section" style="display: none;">
+                <h2> Usimamizi wa Mikopo ya Vitabu</h2>
+                <button class="btn" onclick="showLoanForm()"> Toa Kitabu Kwa Mkopo</button>
+                
+                <div id="loanForm" style="display: none; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px;">
+                    <h3> Toa Kitabu Kwa Mkopo</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="loanStudent">Chagua Mwanafunzi:</label>
+                            <select id="loanStudent" required>
+                                <option value="">Chagua Mwanafunzi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="loanBook">Chagua Kitabu:</label>
+                            <select id="loanBook" required>
+                                <option value="">Chagua Kitabu</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="loanDate">Tarehe ya Kukopa (Automatically):</label>
+                            <input type="date" id="loanDate" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Tarehe ya Kurudisha:</label>
+                            <input type="date" id="dueDate" required>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addLoan()"> Toa Kwa Mkopo</button>
+                    <button class="btn btn-danger" onclick="hideLoanForm()"> Futa</button>
+                </div>
+                
+                <table id="loansTable" style="margin-top: 2rem;">
+                    <thead>
+                        <tr>
+                            <th>Namba ya Mkopo</th>
+                            <th>Mwanafunzi</th>
+                            <th>Kitabu</th>
+                            <th>Tarehe ya Kukopa</th>
+                            <th>Tarehe ya Kurudisha</th>
+                            <th>Hali</th>
+                            <th>Vitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansList">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Adhabu -->
+            <div id="penalties" class="section" style="display: none;">
+                <h2> Orodha ya Adhabu</h2>
+                <div class="card warning" style="text-align: left; margin-bottom: 2rem;">
+                    <h3> Kanuni za Adhabu</h3>
+                    <p><strong>Ada ya Kuchelewa:</strong> TSh 500 kwa kila siku</p>
+                    <p><strong>Kipindi cha Ruhusa:</strong> Siku 14 tu</p>
+                </div>
+                
+                <table id="penaltiesTable">
+                    <thead>
+                        <tr>
+                            <th>Mwanafunzi</th>
+                            <th>Kitabu</th>
+                            <th>Siku Zilizochelewa</th>
+                            <th>Ada ya Adhabu</th>
+                            <th>Hali ya Kulipa</th>
+                            <th>Vitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="penaltiesList">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Ripoti -->
+            <div id="reports" class="section" style="display: none;">
+                <h2> Ripoti za Maktaba</h2>
+                
+                <!-- Vitupu vya Print -->
+                <div style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="exportToExcel()">
+                         Print Ripoti Zote (Excel)
+                    </button>
+                    <button class="btn" onclick="exportMonthlyReport()">
+                         Ripoti ya Mwezi (Excel)
+                    </button>
+                    <button class="btn" onclick="exportClassReport()">
+                         Ripoti ya Darasa (Excel)
+                    </button>
+                    <button class="btn" onclick="generateReports()">
+                         Sasisha Ripoti
+                    </button>
+                </div>
+                
+                <div class="dashboard">
+                    <div class="card">
+                        <h3> Vitabu Vilivyokopwa Zaidi</h3>
+                        <div id="mostBorrowedBooks">Hakuna data</div>
+                    </div>
+                    <div class="card">
+                        <h3> Wanafunzi Wakopaji</h3>
+                        <div id="topBorrowers">Hakuna data</div>
+                    </div>
+                    <div class="card">
+                        <h3> Darasa Lenye Wakopaji</h3>
+                        <div id="topClasses">Hakuna data</div>
+                    </div>
+                </div>
+                
+                <div class="section" style="margin-top: 2rem;">
+                    <h3> Historia ya Mikopo ya Mwezi Huu</h3>
+                    <table id="monthlyReportTable">
+                        <thead>
+                            <tr>
+                                <th>Tarehe</th>
+                                <th>Mwanafunzi</th>
+                                <th>Kitabu</th>
+                                <th>Darasa</th>
+                                <th>Hali</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlyReportList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Msimamizi -->
+            <div id="admin" class="section" style="display: none;">
+                <h2> Mipangilio ya Mfumo</h2>
+                <div class="form-row">
+                    <div class="card">
+                        <h3> Watumiaji</h3>
+                        <p>Idadi ya Watumiaji: <span id="userCount">0</span></p>
+                        <button class="btn" onclick="showUserForm()">Ongeza Mtumiaji</button>
+                    </div>
+                    <div class="card">
+                        <h3> Hifadhi Data</h3>
+                        <button class="btn" onclick="backupData()">Fanya Backup</button>
+                        <button class="btn btn-warning" onclick="restoreData()">Rudisha Data</button>
+                    </div>
+                </div>
+                
+                <div id="userForm" style="display: none; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px;">
+                    <h3> Ongeza Mtumiaji Mpya</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newUsername">Jina la Mtumiaji:</label>
+                            <input type="text" id="newUsername">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Nywila:</label>
+                            <input type="password" id="newPassword">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Jukumu:</label>
+                        <select id="userRole">
+                            <option value="admin">Mwalimu Mkuu</option>
+                            <option value="assistant">Msaidizi</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addUser()">Ongeza Mtumiaji</button>
+                    <button class="btn btn-danger" onclick="hideUserForm()">Futa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let currentUser = null;
+        let books = JSON.parse(localStorage.getItem('chisorya_books')) || [];
+        let students = JSON.parse(localStorage.getItem('chisorya_students')) || [];
+        let loans = JSON.parse(localStorage.getItem('chisorya_loans')) || [];
+        let users = JSON.parse(localStorage.getItem('chisorya_users')) || [
+            { username: 'admin', password: 'admin123', role: 'admin' },
+            { username: 'assistant', password: 'assistant123', role: 'assistant' }
+        ];
+        let penalties = JSON.parse(localStorage.getItem('chisorya_penalties')) || [];
+
+        // Initialize
+        function initializeData() {
+            if (!localStorage.getItem('chisorya_initialized')) {
+                // Add sample students
+                const sampleStudents = [
+                    { id: 1, name: "JOHN MBOWE", regNumber: "CS2024001", class: "Form 4", stream: "SCIENCE" },
+                    { id: 2, name: "MARY KISANJI", regNumber: "CS2024002", class: "Form 3", stream: "ARTS" },
+                    { id: 3, name: "PETER MSHANA", regNumber: "CS2024003", class: "Form 5", stream: "COMMERCE" }
+                ];
+                
+                // Add sample books
+                const sampleBooks = [
+                    { id: 1, title: "Advanced Mathematics", author: "Dr. Smith", isbn: "MATH-001", category: "Hisabati", copies: 5, available: 5 },
+                    { id: 2, title: "Physics for Secondary", author: "Prof. Johnson", isbn: "PHY-002", category: "Sayansi", copies: 3, available: 3 },
+                    { id: 3, title: "Swahili Fasihi", author: "Dr. Mwamba", isbn: "SWA-003", category: "Fasihi", copies: 8, available: 8 }
+                ];
+                
+                students = sampleStudents;
+                books = sampleBooks;
+                
+                saveAllData();
+                localStorage.setItem('chisorya_initialized', 'true');
+            }
+        }
+
+        //  LOGIN SYSTEM - IMPROVED VERSION
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Check if fields are filled
+            if (!username || !password) {
+                alert('Tafadhali jaza jina la mtumiaji na nywila!');
+                return;
+            }
+
+            // Get users from localStorage
+            const savedUsers = JSON.parse(localStorage.getItem('chisorya_users')) || users;
+
+            // Find user
+            const user = savedUsers.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                
+                // Hide login and show main system
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainSystem').style.display = 'block';
+                
+                // Show user info
+                document.getElementById('userInfo').textContent = `Jina: ${user.username} | Jukumu: ${user.role === 'admin' ? 'Mwalimu Mkuu' : 'Msaidizi'}`;
+                
+                // Initialize data
+                initializeData();
+                
+                // Show dashboard
+                showSection('dashboard');
+                
+                // Save current user to localStorage
+                localStorage.setItem('chisorya_currentUser', JSON.stringify(user));
+            } else {
+                alert('Jina la mtumiaji au nywila si sahihi! Tumia: admin / admin123');
+            }
+        }
+        
+        //  RESET SYSTEM KAMA INAKATAZA
+        function resetSystem() {
+            if (confirm('Una uhakika unataka kufuta data yote na kuanza upya? Hii itafuta vitabu, wanafunzi na mikopo yote!')) {
+                localStorage.removeItem('chisorya_books');
+                localStorage.removeItem('chisorya_students');
+                localStorage.removeItem('chisorya_loans');
+                localStorage.removeItem('chisorya_penalties');
+                localStorage.removeItem('chisorya_users');
+                localStorage.removeItem('chisorya_currentUser');
+                localStorage.removeItem('chisorya_initialized');
+                
+                alert(' Data yote imefutwa! Ukurasa utapakizwa upya.');
+                location.reload();
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('mainSystem').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all links
+            document.querySelectorAll('.nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).style.display = 'block';
+            
+            // Add active class to clicked link
+            event.target.classList.add('active');
+            
+            // Load section data
+            if (sectionName === 'dashboard') {
+                updateDashboard();
+            } else if (sectionName === 'students') {
+                loadStudents();
+            } else if (sectionName === 'books') {
+                loadBooks();
+            } else if (sectionName === 'loans') {
+                loadLoans();
+            } else if (sectionName === 'penalties') {
+                loadPenalties();
+            } else if (sectionName === 'reports') {
+                generateReports();
+            } else if (sectionName === 'admin') {
+                loadAdmin();
+            }
+        }
+
+        // Dashboard
+        function updateDashboard() {
+            document.getElementById('totalBooks').textContent = books.reduce((total, book) => total + book.copies, 0);
+            document.getElementById('totalStudents').textContent = students.length;
+            document.getElementById('borrowedBooks').textContent = loans.filter(loan => !loan.returned).length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const overdueCount = loans.filter(loan => !loan.returned && loan.dueDate < today).length;
+            document.getElementById('overdueLoans').textContent = overdueCount;
+            
+            // Show due soon loans
+            const dueSoonList = document.getElementById('dueSoonList');
+            dueSoonList.innerHTML = '';
+            
+            const dueSoonLoans = loans.filter(loan => !loan.returned).slice(0, 5);
+            dueSoonLoans.forEach(loan => {
+                const daysLeft = Math.ceil((new Date(loan.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${loan.studentName}</td>
+                    <td>${loan.bookTitle}</td>
+                    <td>${loan.dueDate}</td>
+                    <td>${daysLeft > 0 ? daysLeft : '<span class="penalty-badge">Imekwisha!</span>'}</td>
+                `;
+                dueSoonList.appendChild(row);
+            });
+        }
+
+        // Student Management
+        function showStudentForm() {
+            document.getElementById('studentForm').style.display = 'block';
+        }
+        
+        function hideStudentForm() {
+            document.getElementById('studentForm').style.display = 'none';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentReg').value = '';
+            document.getElementById('studentClass').value = '';
+            document.getElementById('studentStream').value = '';
+        }
+        
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const regNumber = document.getElementById('studentReg').value;
+            const studentClass = document.getElementById('studentClass').value;
+            const stream = document.getElementById('studentStream').value;
+            
+            if (name && regNumber && studentClass && stream) {
+                const newStudent = {
+                    id: Date.now(),
+                    name,
+                    regNumber,
+                    class: studentClass,
+                    stream
+                };
+                
+                students.push(newStudent);
+                saveStudents();
+                loadStudents();
+                hideStudentForm();
+                updateDashboard();
+                alert('Mwanafunzi amesajiliwa kikamilifu!');
+            } else {
+                alert('Tafadhali jaza sehemu zote!');
+            }
+        }
+        
+        function loadStudents() {
+            const studentsList = document.getElementById('studentsList');
+            studentsList.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.regNumber}</td>
+                    <td>${student.name}</td>
+                    <td>${student.class}</td>
+                    <td>${student.stream}</td>
+                    <td>
+                        <button class="btn" onclick="editStudent(${student.id})">Hariri</button>
+                        <button class="btn btn-danger" onclick="deleteStudent(${student.id})">Futa</button>
+                    </td>
+                `;
+                studentsList.appendChild(row);
+            });
+        }
+        
+        function deleteStudent(id) {
+            if (confirm('Una uhakika unataka kumfuta mwanafunzi huyu?')) {
+                students = students.filter(student => student.id !== id);
+                saveStudents();
+                loadStudents();
+                updateDashboard();
+            }
+        }
+
+        // Book Management
+        function showBookForm() {
+            document.getElementById('bookForm').style.display = 'block';
+        }
+        
+        function hideBookForm() {
+            document.getElementById('bookForm').style.display = 'none';
+            document.getElementById('bookTitle').value = '';
+            document.getElementById('bookAuthor').value = '';
+            document.getElementById('bookISBN').value = '';
+            document.getElementById('bookCopies').value = '1';
+            document.getElementById('bookCategory').value = 'Fasihi';
+        }
+        
+        function addBook() {
+            const title = document.getElementById('bookTitle').value;
+            const author = document.getElementById('bookAuthor').value;
+            const isbn = document.getElementById('bookISBN').value;
+            const copies = parseInt(document.getElementById('bookCopies').value);
+            const category = document.getElementById('bookCategory').value;
+            
+            if (title && author) {
+                const newBook = {
+                    id: Date.now(),
+                    title,
+                    author,
+                    isbn,
+                    category,
+                    copies,
+                    available: copies
+                };
+                
+                books.push(newBook);
+                saveBooks();
+                loadBooks();
+                hideBookForm();
+                updateDashboard();
+                alert('Kitabu kimeongezwa kikamilifu!');
+            } else {
+                alert('Tafadhali jaza angalau kichwa na mwandishi wa kitabu.');
+            }
+        }
+        
+        function loadBooks() {
+            const booksList = document.getElementById('booksList');
+            booksList.innerHTML = '';
+            
+            books.forEach(book => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${book.isbn || '-'}</td>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>${book.category}</td>
+                    <td>${book.available} / ${book.copies}</td>
+                    <td>
+                        <button class="btn" onclick="editBook(${book.id})">Hariri</button>
+                        <button class="btn btn-danger" onclick="deleteBook(${book.id})">Futa</button>
+                    </td>
+                `;
+                booksList.appendChild(row);
+            });
+        }
+        
+        function deleteBook(id) {
+            if (confirm('Una uhakika unataka kufuta kitabu hiki?')) {
+                books = books.filter(book => book.id !== id);
+                saveBooks();
+                loadBooks();
+                updateDashboard();
+            }
+        }
+
+        // Loan Management
+        function showLoanForm() {
+            // Populate students
+            const studentSelect = document.getElementById('loanStudent');
+            studentSelect.innerHTML = '<option value="">Chagua Mwanafunzi</option>';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.name} (${student.regNumber}) - ${student.class}${student.stream}`;
+                studentSelect.appendChild(option);
+            });
+            
+            // Populate available books
+            const bookSelect = document.getElementById('loanBook');
+            bookSelect.innerHTML = '<option value="">Chagua Kitabu</option>';
+            books.forEach(book => {
+                if (book.available > 0) {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = `${book.title} - ${book.author} (${book.available} in stock)`;
+                    bookSelect.appendChild(option);
+                }
+            });
+            
+            // Set current date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('loanDate').value = today;
+            
+            // Set due date (14 days from now)
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 14);
+            document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            
+            document.getElementById('loanForm').style.display = 'block';
+        }
+        
+        function hideLoanForm() {
+            document.getElementById('loanForm').style.display = 'none';
+        }
+        
+        function addLoan() {
+            const studentId = parseInt(document.getElementById('loanStudent').value);
+            const bookId = parseInt(document.getElementById('loanBook').value);
+            const dueDate = document.getElementById('dueDate').value;
+            
+            if (studentId && bookId && dueDate) {
+                const student = students.find(s => s.id === studentId);
+                const book = books.find(b => b.id === bookId);
+                
+                if (book.available > 0) {
+                    const newLoan = {
+                        id: Date.now(),
+                        studentId,
+                        studentName: student.name,
+                        studentReg: student.regNumber,
+                        studentClass: student.class,
+                        studentStream: student.stream,
+                        bookId,
+                        bookTitle: book.title,
+                        bookISBN: book.isbn,
+                        loanDate: new Date().toISOString().split('T')[0],
+                        dueDate,
+                        returned: false,
+                        returnDate: null
+                    };
+                    
+                    loans.push(newLoan);
+                    
+                    // Reduce available copies
+                    book.available--;
+                    
+                    saveLoans();
+                    saveBooks();
+                    loadLoans();
+                    hideLoanForm();
+                    updateDashboard();
+                    alert('Kitabu kimetolewa kwa mwanafunzi!');
+                } else {
+                    alert('Kitabu hiki hakipo kwa sasa.');
+                }
+            } else {
+                alert('Tafadhali jaza sehemu zote.');
+            }
+        }
+        
+        function loadLoans() {
+            const loansList = document.getElementById('loansList');
+            loansList.innerHTML = '';
+            
+            loans.forEach(loan => {
+                const today = new Date().toISOString().split('T')[0];
+                const isOverdue = !loan.returned && loan.dueDate < today;
+                const statusClass = loan.returned ? 'status-returned' : (isOverdue ? 'status-overdue' : 'status-borrowed');
+                const statusText = loan.returned ? 'Imerudishwa' : (isOverdue ? 'Imekwisha Muda' : 'Imekopwa');
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>L${loan.id}</td>
+                    <td>${loan.studentName} (${loan.studentReg})</td>
+                    <td>${loan.bookTitle}</td>
+                    <td>${loan.loanDate}</td>
+                    <td>${loan.dueDate}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        ${!loan.returned ? 
+                            `<button class="btn" onclick="returnBook(${loan.id})">Rudisha</button>` : 
+                            ''
+                        }
+                    </td>
+                `;
+                loansList.appendChild(row);
+            });
+        }
+        
+        function returnBook(loanId) {
+            const loan = loans.find(l => l.id === loanId);
+            if (loan) {
+                loan.returned = true;
+                loan.returnDate = new Date().toISOString().split('T')[0];
+                
+                // Increase available copies
+                const book = books.find(b => b.id === loan.bookId);
+                if (book) {
+                    book.available++;
+                }
+                
+                // Check for penalty
+                const today = new Date();
+                const dueDate = new Date(loan.dueDate);
+                if (today > dueDate) {
+                    const daysLate = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+                    const penaltyAmount = daysLate * 500; // 500 TSh per day
+                    
+                    const penalty = {
+                        id: Date.now(),
+                        loanId: loan.id,
+                        studentId: loan.studentId,
+                        studentName: loan.studentName,
+                        studentReg: loan.studentReg,
+                        bookTitle: loan.bookTitle,
+                        daysLate: daysLate,
+                        amount: penaltyAmount,
+                        paid: false
+                    };
+                    
+                    penalties.push(penalty);
+                    savePenalties();
+                    
+                    alert(`Kitabu kimerudishwa lakini kuna adhabu ya TSh ${penaltyAmount} kwa kuchelewa siku ${daysLate}`);
+                } else {
+                    alert('Kitabu kimerudishwa kikamilifu!');
+                }
+                
+                saveLoans();
+                saveBooks();
+                loadLoans();
+                updateDashboard();
+            }
+        }
+
+        // Penalties Management
+        function loadPenalties() {
+            const penaltiesList = document.getElementById('penaltiesList');
+            penaltiesList.innerHTML = '';
+            
+            penalties.forEach(penalty => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${penalty.studentName} (${penalty.studentReg})</td>
+                    <td>${penalty.bookTitle}</td>
+                    <td>${penalty.daysLate}</td>
+                    <td>TSh ${penalty.amount}</td>
+                    <td>${penalty.paid ? 'Imelipwa' : 'Haijalipwa'}</td>
+                    <td>
+                        ${!penalty.paid ? 
+                            `<button class="btn" onclick="markPenaltyPaid(${penalty.id})">Weka Imelipwa</button>` : 
+                            ''
+                        }
+                    </td>
+                `;
+                penaltiesList.appendChild(row);
+            });
+        }
+        
+        function markPenaltyPaid(penaltyId) {
+            const penalty = penalties.find(p => p.id === penaltyId);
+            if (penalty) {
+                penalty.paid = true;
+                savePenalties();
+                loadPenalties();
+                alert('Adhabu imesajiliwa kama imelipwa!');
+            }
+        }
+
+        // Reports
+        function generateReports() {
+            // Most borrowed books
+            const bookCounts = {};
+            loans.forEach(loan => {
+                if (bookCounts[loan.bookTitle]) {
+                    bookCounts[loan.bookTitle]++;
+                } else {
+                    bookCounts[loan.bookTitle] = 1;
+                }
+            });
+            
+            const sortedBooks = Object.entries(bookCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const mostBorrowedDiv = document.getElementById('mostBorrowedBooks');
+            if (sortedBooks.length > 0) {
+                mostBorrowedDiv.innerHTML = sortedBooks.map(([book, count]) => 
+                    `<div style="margin: 0.5rem 0;">${book}: <strong>${count}</strong></div>`
+                ).join('');
+            } else {
+                mostBorrowedDiv.textContent = 'Hakuna data';
+            }
+            
+            // Top borrowers
+            const studentCounts = {};
+            loans.forEach(loan => {
+                if (studentCounts[loan.studentName]) {
+                    studentCounts[loan.studentName]++;
+                } else {
+                    studentCounts[loan.studentName] = 1;
+                }
+            });
+            
+            const sortedStudents = Object.entries(studentCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const topBorrowersDiv = document.getElementById('topBorrowers');
+            if (sortedStudents.length > 0) {
+                topBorrowersDiv.innerHTML = sortedStudents.map(([student, count]) => 
+                    `<div style="margin: 0.5rem 0;">${student}: <strong>${count}</strong></div>`
+                ).join('');
+            } else {
+                topBorrowersDiv.textContent = 'Hakuna data';
+            }
+            
+            // Top classes
+            const classCounts = {};
+            loans.forEach(loan => {
+                const classKey = `${loan.studentClass}${loan.studentStream}`;
+                if (classCounts[classKey]) {
+                    classCounts[classKey]++;
+                } else {
+                    classCounts[classKey] = 1;
+                }
+            });
+            
+            const sortedClasses = Object.entries(classCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const topClassesDiv = document.getElementById('topClasses');
+            if (sortedClasses.length > 0) {
+                topClassesDiv.innerHTML = sortedClasses.map(([cls, count]) => 
+                    `<div style="margin: 0.5rem 0;">${cls}: <strong>${count}</strong></div>`
+                ).join('');
+            } else {
+                topClassesDiv.textContent = 'Hakuna data';
+            }
+            
+            // Monthly report
+            const monthlyReportList = document.getElementById('monthlyReportList');
+            monthlyReportList.innerHTML = '';
+            
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyLoans = loans.filter(loan => loan.loanDate.startsWith(currentMonth));
+            
+            monthlyLoans.forEach(loan => {
+                const statusText = loan.returned ? 'Imerudishwa' : 'Imekopwa';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${loan.loanDate}</td>
+                    <td>${loan.studentName}</td>
+                    <td>${loan.bookTitle}</td>
+                    <td>${loan.studentClass}${loan.studentStream}</td>
+                    <td>${statusText}</td>
+                `;
+                monthlyReportList.appendChild(row);
+            });
+        }
+
+        // Admin Functions
+        function loadAdmin() {
+            document.getElementById('userCount').textContent = users.length;
+        }
+        
+        function showUserForm() {
+            document.getElementById('userForm').style.display = 'block';
+        }
+        
+        function hideUserForm() {
+            document.getElementById('userForm').style.display = 'none';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('userRole').value = 'assistant';
+        }
+        
+        function addUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('userRole').value;
+            
+            if (username && password) {
+                const newUser = {
+                    username,
+                    password,
+                    role
+                };
+                
+                users.push(newUser);
+                saveUsers();
+                hideUserForm();
+                loadAdmin();
+                alert('Mtumiaji mpya ameongezwa!');
+            } else {
+                alert('Tafadhali jaza sehemu zote!');
+            }
+        }
+        
+        function backupData() {
+            const backup = {
+                books,
+                students,
+                loans,
+                penalties,
+                users,
+                backupDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chisorya_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Data imehifadhiwa kikamilifu!');
+        }
+        
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const backup = JSON.parse(e.target.result);
+                        books = backup.books || [];
+                        students = backup.students || [];
+                        loans = backup.loans || [];
+                        penalties = backup.penalties || [];
+                        users = backup.users || [];
+                        
+                        saveAllData();
+                        alert('Data imerudishwa kikamilifu!');
+                        location.reload();
+                    } catch (error) {
+                        alert('Hitilafu katika kusoma faili ya backup!');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Save Functions
+        function saveBooks() {
+            localStorage.setItem('chisorya_books', JSON.stringify(books));
+        }
+        
+        function saveStudents() {
+            localStorage.setItem('chisorya_students', JSON.stringify(students));
+        }
+        
+        function saveLoans() {
+            localStorage.setItem('chisorya_loans', JSON.stringify(loans));
+        }
+        
+        function savePenalties() {
+            localStorage.setItem('chisorya_penalties', JSON.stringify(penalties));
+        }
+        
+        function saveUsers() {
+            localStorage.setItem('chisorya_users', JSON.stringify(users));
+        }
+        
+        function saveAllData() {
+            saveBooks();
+            saveStudents();
+            saveLoans();
+            savePenalties();
+            saveUsers();
+        }
+
+        //  PRINT RIPOTI KWA EXCEL
+        function exportToExcel() {
+            // Create a new workbook
+            const wb = XLSX.utils.book_new();
+            
+            // 1. RIPOTI YA VITABU
+            const booksData = [
+                ['ISBN', 'KICHWA CHA KITABU', 'MWANDISHI', 'AINA', 'NAKALA ZOTE', 'ZILIZOPO', 'ZIMEKOPWA']
+            ];
+            
+            books.forEach(book => {
+                booksData.push([
+                    book.isbn || '-',
+                    book.title,
+                    book.author,
+                    book.category,
+                    book.copies,
+                    book.available,
+                    book.copies - book.available
+                ]);
+            });
+            
+            const booksSheet = XLSX.utils.aoa_to_sheet(booksData);
+            XLSX.utils.book_append_sheet(wb, booksSheet, 'Vitabu');
+            
+            // 2. RIPOTI YA WANAFUNZI
+            const studentsData = [
+                ['NMB YA USAJILI', 'JINA KAMILI', 'DARASA', 'KICHWA']
+            ];
+            
+            students.forEach(student => {
+                studentsData.push([
+                    student.regNumber,
+                    student.name,
+                    student.class,
+                    student.stream
+                ]);
+            });
+            
+            const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+            XLSX.utils.book_append_sheet(wb, studentsSheet, 'Wanafunzi');
+            
+            // 3. RIPOTI YA MIKOPO
+            const loansData = [
+                ['NMB MKOPO', 'MWANAFUNZI', 'NMB USAJILI', 'KITABU', 'TAREHE KUKOPA', 'TAREHE KURUDISHA', 'HALI', 'TAREHE KURUDISHWA']
+            ];
+            
+            loans.forEach(loan => {
+                loansData.push([
+                    'L' + loan.id,
+                    loan.studentName,
+                    loan.studentReg,
+                    loan.bookTitle,
+                    loan.loanDate,
+                    loan.dueDate,
+                    loan.returned ? 'IMERUDISHWA' : 'IMEKOPWA',
+                    loan.returnDate || '-'
+                ]);
+            });
+            
+            const loansSheet = XLSX.utils.aoa_to_sheet(loansData);
+            XLSX.utils.book_append_sheet(wb, loansSheet, 'Mikopo');
+            
+            // 4. RIPOTI YA ADHABU
+            const penaltiesData = [
+                ['MWANAFUNZI', 'NMB USAJILI', 'KITABU', 'SIKU ZILIZOCHELEWA', 'KIASI (TSh)', 'HALI YA MALIPO']
+            ];
+            
+            penalties.forEach(penalty => {
+                penaltiesData.push([
+                    penalty.studentName,
+                    penalty.studentReg,
+                    penalty.bookTitle,
+                    penalty.daysLate,
+                    penalty.amount,
+                    penalty.paid ? 'IMELIPWA' : 'HAIJALIPWA'
+                ]);
+            });
+            
+            const penaltiesSheet = XLSX.utils.aoa_to_sheet(penaltiesData);
+            XLSX.utils.book_append_sheet(wb, penaltiesSheet, 'Adhabu');
+            
+            // 5. RIPOTI YA TAKWIMU
+            const statsData = [
+                ['KIPIMO', 'IDADI'],
+                ['Jumla ya Vitabu', books.reduce((total, book) => total + book.copies, 0)],
+                ['Wanafunzi Waliosajiliwa', students.length],
+                ['Vitabu Vilivyokopwa', loans.filter(loan => !loan.returned).length],
+                ['Mikopo Iliyorejeshwa', loans.filter(loan => loan.returned).length],
+                ['Mikopo Iliyochelewa', loans.filter(loan => !loan.returned && new Date(loan.dueDate) < new Date()).length],
+                ['Jumla ya Adhabu', penalties.reduce((total, penalty) => total + penalty.amount, 0)],
+                ['Adhabu Zisizolipwa', penalties.filter(p => !p.paid).reduce((total, penalty) => total + penalty.amount, 0)]
+            ];
+            
+            const statsSheet = XLSX.utils.aoa_to_sheet(statsData);
+            XLSX.utils.book_append_sheet(wb, statsSheet, 'Takwimu');
+            
+            // Generate filename with current date
+            const today = new Date().toISOString().split('T')[0];
+            const filename = `Ripoti_Maktaba_Chisorya_${today}.xlsx`;
+            
+            // Export to Excel
+            XLSX.writeFile(wb, filename);
+            alert(` Ripoti imeandaliwa kikamilifu: ${filename}`);
+        }
+
+        //  PRINT RIPOTI YA MWEZI
+        function exportMonthlyReport() {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthName = new Date().toLocaleDateString('sw-TZ', { month: 'long', year: 'numeric' });
+            
+            const monthlyLoans = loans.filter(loan => loan.loanDate.startsWith(currentMonth));
+            
+            const wb = XLSX.utils.book_new();
+            
+            const monthlyData = [
+                ['TAREHE', 'MWANAFUNZI', 'NMB USAJILI', 'DARASA', 'KITABU', 'TAREHE KURUDISHA', 'HALI']
+            ];
+            
+            monthlyLoans.forEach(loan => {
+                monthlyData.push([
+                    loan.loanDate,
+                    loan.studentName,
+                    loan.studentReg,
+                    `${loan.studentClass}${loan.studentStream}`,
+                    loan.bookTitle,
+                    loan.dueDate,
+                    loan.returned ? 'IMERUDISHWA' : 'IMEKOPWA'
+                ]);
+            });
+            
+            const monthlySheet = XLSX.utils.aoa_to_sheet(monthlyData);
+            XLSX.utils.book_append_sheet(wb, monthlySheet, `Mikopo_${currentMonth}`);
+            
+            const filename = `Ripoti_Mwezi_${currentMonth}_Chisorya.xlsx`;
+            XLSX.writeFile(wb, filename);
+            alert(` Ripoti ya mwezi ${monthName} imeandaliwa!`);
+        }
+
+        //  PRINT RIPOTI YA DARASA MAALUM
+        function exportClassReport() {
+            const className = prompt("Weka jina la darasa (mf: Form 4SCIENCE):");
+            if (!className) return;
+            
+            const classStudents = students.filter(student => 
+                `${student.class}${student.stream}` === className
+            );
+            
+            if (classStudents.length === 0) {
+                alert(`Hakuna wanafunzi wa darasa ${className}!`);
+                return;
+            }
+            
+            const classLoans = loans.filter(loan => 
+                `${loan.studentClass}${loan.studentStream}` === className
+            );
+            
+            const wb = XLSX.utils.book_new();
+            
+            // Sheet ya wanafunzi
+            const studentsData = [
+                ['NMB YA USAJILI', 'JINA KAMILI', 'DARASA', 'KICHWA']
+            ];
+            
+            classStudents.forEach(student => {
+                studentsData.push([
+                    student.regNumber,
+                    student.name,
+                    student.class,
+                    student.stream
+                ]);
+            });
+            
+            const studentsSheet = XLSX.utils.aoa_to_sheet(studentsData);
+            XLSX.utils.book_append_sheet(wb, studentsSheet, 'Wanafunzi');
+            
+            // Sheet ya mikopo
+            const loansData = [
+                ['MWANAFUNZI', 'KITABU', 'TAREHE KUKOPA', 'TAREHE KURUDISHA', 'HALI']
+            ];
+            
+            classLoans.forEach(loan => {
+                loansData.push([
+                    loan.studentName,
+                    loan.bookTitle,
+                    loan.loanDate,
+                    loan.dueDate,
+                    loan.returned ? 'IMERUDISHWA' : 'IMEKOPWA'
+                ]);
+            });
+            
+            const loansSheet = XLSX.utils.aoa_to_sheet(loansData);
+            XLSX.utils.book_append_sheet(wb, loansSheet, 'Mikopo');
+            
+            const filename = `Ripoti_Darasa_${className}_Chisorya.xlsx`;
+            XLSX.writeFile(wb, filename);
+            alert(` Ripoti ya darasa ${className} imeandaliwa!`);
+        }
+
+        // Add Enter key support for login
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener for Enter key in password field
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
